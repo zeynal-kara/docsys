@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\SearchFileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,5 +19,6 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => 'admin'], function () {
+    Route::get("/search-file", [SearchFileController::class, "index"])->middleware("admin.user");
     Voyager::routes();
 });
