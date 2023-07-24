@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class IpMiddleware
 {
@@ -17,12 +18,16 @@ class IpMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        if (Auth::check() &&
+            !setting('site.system_state') &&
+            !auth()->user()->hasPermission('browse_when_system_off')) {
 
-        /*if (!in_array($request->getClientIp(), $this->whitelistIps)) {
-            abort(403, "You are restricted to access the site.");
-        }*/
+            auth()->logout();
 
-        if( $ip = $request->getClientIp() ) {
+            return abort(403, "System Suspended, Only Super Admin Can Login.");
+        }
+
+        if(setting('site.only_ip') && $ip = $request->getClientIp() ) {
             $db_ip = DB::table('ip_addresses')
                 ->where('ip', '=', $ip)->first();
 
