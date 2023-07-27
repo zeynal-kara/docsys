@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchFileController;
+use App\Http\Controllers\FilesController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +18,12 @@ use App\Http\Controllers\SearchFileController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name("login");
+
+Route::get('/files/{path}', FilesController::class)->where('path', '^(.+)\/([^\/]+)$');
 
 
 Route::group(['prefix' => 'admin'], function () {
