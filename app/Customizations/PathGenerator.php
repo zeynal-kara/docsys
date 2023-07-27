@@ -9,9 +9,14 @@ class PathGenerator extends DPathGenerator
 {
     public function getPath(Media $media) : string
     {
-        if(!empty($media->file_category_id))
+        if($media->file_category_id)
             return "/doc_root/". $media->file_category_id . "/";
         else
             return $this->getBasePath($media).'/';
+    }
+
+    function getBasePath(Media $media): string
+    {
+        return "/doc_root/". $media->file_category_id . "/";
     }
 }
