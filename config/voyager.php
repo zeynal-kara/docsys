@@ -144,7 +144,11 @@ return [
         ],
 
         'widgets' => [
-
+            'App\\Widgets\\DocumentDimmer',
+            'App\\Widgets\\CategoryDimmer',
+            'App\\Widgets\\SubjectDimmer',
+            'TCG\\Voyager\\Widgets\\UserDimmer',
+            'App\\Widgets\\IpAddressDimmer',
         ],
 
     ],
