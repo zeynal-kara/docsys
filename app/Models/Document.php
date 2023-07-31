@@ -16,11 +16,11 @@ class Document extends Model implements HasMedia
 
     function addMedia(string|UploadedFile $file): FileAdder
     {
-        //dd($this); die;
+        //dd(); die;
         // return $this->trAddMedia($file);
 
         $fileAdder = app(config('media-library.file_adder_model'));
-        $fileAdder->file_category_id = 1;
+        $fileAdder->file_category_id = $this->category_id;
         $fileAdder->setSubject($this)->setFile($file);
 
         return $fileAdder;
