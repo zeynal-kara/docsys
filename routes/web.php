@@ -23,6 +23,10 @@ Route::get('/login', function () {
     return redirect('/admin/login');
 })->name("login");
 
+Route::post('/admin/getUsers', [SearchFileController::class, 'getUsers'])->name('getUsers');
+Route::post('/admin/getSubjects', [SearchFileController::class, 'getSubjects'])->name('getSubjects');
+Route::post('/admin/getCategories', [SearchFileController::class, 'getCategories'])->name('getCategories');
+
 Route::get('/files/{path}', FilesController::class)->where('path', '^(.+)\/([^\/]+)$');
 
 

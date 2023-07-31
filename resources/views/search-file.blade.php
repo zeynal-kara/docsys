@@ -1,42 +1,44 @@
 @extends("voyager::master")
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('/js/select2/select2.min.css') }}">
+@endsection
+
 @section('content')
 
 <div class="container">
-        <div class="row" >
+        <div class="row" style="padding: 10px" >
             <div class="col-12" style="padding-top: 60px">
                 <input type="text" class="form-control" placeholder="Arama yap...">
             </div>
-            <div class="row">
+            <div class="row justify-content-center">
                 <div class="col-sm-3">
                     <label for="select" style="">Author</label>
-                    <select class="form-control" name="" id="">
-                        <option value="">Kerem</option>
-                        <option value="">Zeynal</option>
-                        <option value="">Admin</option>
+                    <select id="authors_" class="form-control" name="" id="">
+                        <option value="-1">All</option>
                     </select>
                 </div>
 
                 <div class="col-sm-3">
-                    <label for="input" style="">File Date</label>
-                    <input class="form-control" type="date" name="" id="">
+                    <label for="datepicker" style="">File Date</label>
+                    <div class="row" style="display: flex">
+                        <input type="date" class="form-control" value="">
+                        <div class="input-group-addon" style="width:50px">to</div>
+                        <input type="date" class="form-control" value="">
+                    </div>
                 </div>
 
                 <div class="col-sm-3">
                     <label for="select" style="">Subject</label>
-                    <select class="form-control" name="" id="">
-                        <option value="">Subject 1</option>
-                        <option value="">Subject 2</option>
-                        <option value="">Subject 3</option>
+                    <select id="subjects_" class="form-control" name="" id="">
+                        <option value="-1">All</option>
                     </select>
                 </div>
 
                 <div class="col-sm-3">
                     <label for="select" style="">Category</label>
-                    <select class="form-control" name="" id="">
-                        <option value="">Category 1</option>
-                        <option value="">Category 2</option>
-                        <option value="">Category 3</option>
+                    <select id="categories_" class="form-control" name="" id="">
+                        <option value="-1">All</option>
                     </select>
                 </div>
 
@@ -220,11 +222,110 @@
 
 @section('javascript')
     
-    <script src="{{ voyager_asset('lib/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('/js/datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('/js/datatable/dataTables.bootstrap.min.js') }}"></script>
+
+    <script src="{{ asset('/js/select2/select2.min.js') }}"></script>
 
     <script>
         $(document).ready(function () {
             new DataTable('#example');
         });
     </script>
+
+    <!-- Script -->
+   <script type="text/javascript">
+   // CSRF Token
+   var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+   $(document).ready(function(){
+
+    setDate()
+    var default_option = [{"id": -1, "text": "All"}];
+
+     $( "#authors_" ).select2({
+        ajax: { 
+          url: "{{route('getUsers')}}",
+          type: "post",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+               _token: CSRF_TOKEN,
+               search: params.term // search term
+            };
+          },
+          processResults: function (response) {
+            response = default_option.concat(response)
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+
+     });
+
+
+     $( "#subjects_" ).select2({
+        ajax: { 
+          url: "{{route('getSubjects')}}",
+          type: "post",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+               _token: CSRF_TOKEN,
+               search: params.term // search term
+            };
+          },
+          processResults: function (response) {
+            response = default_option.concat(response)
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+
+     });
+
+
+     $( "#categories_" ).select2({
+        ajax: { 
+          url: "{{route('getCategories')}}",
+          type: "post",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+               _token: CSRF_TOKEN,
+               search: params.term // search term
+            };
+          },
+          processResults: function (response) {
+            response = default_option.concat(response)
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+
+     });
+
+   });
+
+   function setDate(){
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = yyyy + '-' + mm + '-' +  dd ;
+    $('input[type=date]').val(formattedToday);
+   }
+   </script>
 @endsection
