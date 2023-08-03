@@ -26,6 +26,7 @@ Route::get('/login', function () {
 Route::post('/admin/getUsers', [SearchFileController::class, 'getUsers'])->name('getUsers');
 Route::post('/admin/getSubjects', [SearchFileController::class, 'getSubjects'])->name('getSubjects');
 Route::post('/admin/getCategories', [SearchFileController::class, 'getCategories'])->name('getCategories');
+Route::post('/admin/getFilteredDoc', [SearchFileController::class, 'getFilteredDoc'])->name('getFilteredDoc');
 
 Route::get('/files/{path}', FilesController::class)->where('path', '^(.+)\/([^\/]+)$');
 

@@ -15,16 +15,59 @@ class SearchFileController extends Controller
     }
 
     function getFilteredDoc(Request $request) {
+        
+
+        $query = $this->getFilteredDocQuery($request);
+
+        $items = $query->get();
+
+        $response = array("data"=>$items);        
+
+        return response()->json($response);
+
+    }
+
+    private function getFilteredDocQuery(Request $request){
+
         $author_id = $request->author_id;
-        $file_date_start = $request->file_date_start;
-        $file_date_end = $request->file_date_end;
         $subject_id = $request->subject_id;
         $category_id = $request->category_id;
 
-        Document::where([
-            []
-        ]);
+        $file_date_start = $request->file_date_start;
+        $file_date_end = $request->file_date_end;
 
+        $search_term =trim($request->search_term);
+        $search_in_title = $request->search_in_title == "true";
+        $search_in_content = $request->search_in_content == "true";
+
+        $query = Document::with("subjects");
+
+        if ($author_id && $author_id != -1) {
+            $query->where("author_id", "=", $author_id);
+        }
+
+        if ($subject_id && $subject_id != -1) {
+            $query->whereRelation("subjects","subject_id", "=", $subject_id);
+        }
+
+        if ($category_id && $category_id != -1) {
+            $ids = Category::where("main_category_id", "=", $category_id)->get()->pluck('id')->all();
+            $ids[] = $category_id;
+            $query->whereIn("category_id", $ids);
+        }
+
+        if ($file_date_start &&  $file_date_end) {
+
+            $query->whereDate("date", ">=", $file_date_start);
+            if ($file_date_end > $file_date_start)
+                $query->whereDate("date", "<=", $file_date_end);            
+        }
+
+        if ($search_term && $search_in_title) {
+            $query->where("name", "like", "%" . $search_term . "%");
+        }
+
+        return $query;
     }
     
     public function getUsers(Request $request){
