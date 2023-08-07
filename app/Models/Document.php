@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Customizations\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -33,5 +34,20 @@ class Document extends Model implements HasMedia
 
     public function subjects() {
         return $this->belongsToMany(Subject::class, "doc_subject_pivots", "document_id", "subject_id");
+    }
+
+    public function author()
+    {
+        return $this->hasOne(User::class, "id", "author_id");
+    }
+
+    public function category()
+    {
+        return $this->hasOne(Category::class, "id", "category_id");
+    }
+
+    public function _media()
+    {
+        return $this->hasOne(Media::class, "model_id", "id");
     }
 }

@@ -15,13 +15,13 @@ class SearchFileController extends Controller
     }
 
     function getFilteredDoc(Request $request) {
-        
+
 
         $query = $this->getFilteredDocQuery($request);
 
         $items = $query->get();
 
-        $response = array("data"=>$items);        
+        $response = array("data"=>$items);
 
         return response()->json($response);
 
@@ -37,10 +37,10 @@ class SearchFileController extends Controller
         $file_date_end = $request->file_date_end;
 
         $search_term =trim($request->search_term);
-        $search_in_title = $request->search_in_title == "true";
+        $search_in_name = $request->search_in_name == "true";
         $search_in_content = $request->search_in_content == "true";
 
-        $query = Document::with("subjects");
+        $query = Document::with(["subjects", "author", "category", "_media"]);
 
         if ($author_id && $author_id != -1) {
             $query->where("author_id", "=", $author_id);
@@ -60,16 +60,16 @@ class SearchFileController extends Controller
 
             $query->whereDate("date", ">=", $file_date_start);
             if ($file_date_end > $file_date_start)
-                $query->whereDate("date", "<=", $file_date_end);            
+                $query->whereDate("date", "<=", $file_date_end);
         }
 
-        if ($search_term && $search_in_title) {
+        if ($search_term && $search_in_name) {
             $query->where("name", "like", "%" . $search_term . "%");
         }
 
         return $query;
     }
-    
+
     public function getUsers(Request $request){
         return $this->getData($request, User::class);
     }

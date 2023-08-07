@@ -12,7 +12,7 @@
             margin-top: 50px;
             display: flex;
             align-items: flex-start;
-        } 
+        }
     </style>
 @endsection
 
@@ -21,14 +21,14 @@
 <div class="container">
         <div class="row" style="padding: 10px">
             <div class="col-12 prevent-select">
-                <input id="search_in_title" type="checkbox"  style="margin-right:5px" checked> 
-                <label for="search_in_title">Search In Title</label>
+                <input v-model="s_in_name" id="search_in_name" type="checkbox"  style="margin-right:5px" checked>
+                <label for="search_in_name">Search In Name</label>
 
-                <input id="search_in_content" type="checkbox" style="margin-left: 20px; margin-right:5px"> 
+                <input v-model="s_in_content" id="search_in_content" type="checkbox" style="margin-left: 20px; margin-right:5px">
                 <label for="search_in_content">Search In Content <strong>[Advanced Search]</strong> </label>
             </div>
-            
-            <div class="col-12">
+
+            <div v-show="s_in_name || s_in_content" class="col-12">
                 <input id="search_term" type="text" class="form-control" placeholder="Search...">
             </div>
             <div class="row justify-content-center">
@@ -37,7 +37,7 @@
                     <select id="authors_" class="form-control" name="" id="">
                         <option value="-1">All</option>
                     </select>
-                </div>                
+                </div>
 
                 <div class="col-sm-3">
                     <label for="select" style="">Subject</label>
@@ -71,137 +71,151 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>File</th>
                         <th>Name</th>
                         <th>Desc</th>
-                        <th>Category Id</th>
+                        <th>Category</th>
                         <th>Date</th>
-                        <th>File</th>
-                        <th>Created</th>
                         <th>Author</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011-04-25</td>
-                        <td>$320,800</td>
-                    </tr>
+
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>ID</th>
+                        <th>File</th>
                         <th>Name</th>
                         <th>Desc</th>
-                        <th>Category Id</th>
+                        <th>Category</th>
                         <th>Date</th>
-                        <th>File</th>
-                        <th>Created</th>
                         <th>Author</th>
                     </tr>
                 </tfoot>
             </table>
         </div>
     </div>
-    
+
 @endsection
 
 @section('javascript')
-    
+
     <script src="{{ asset('/js/datatable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('/js/datatable/dataTables.bootstrap.min.js') }}"></script>
-
     <script src="{{ asset('/js/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('/js/vuejs/vue.global.js') }}"></script>
+
+    <script>
+        const app = Vue.createApp({
+           data(){
+                return{
+                    s_in_name: false,
+                    s_in_content: false,
+                }
+           }
+        }).mount(".container");
+    </script>
 
     <script>
 
+        var table;
+
         $(document).ready(function () {
-            $("#example").DataTable({
+            table = $("#example").DataTable({
                 processing:true,
                 paging:true,
                 ajax: {
                     url: "{{route('getFilteredDoc')}}",
                     method: "POST",
                     dataType: "json",
+                    "data": function ( d ) {
+                        getFilterOptions(d);
+                    }
                 },
                 columns:[
                     {"data":"id"},
+                    {"data":"_media.original_url"},
                     {"data":"name"},
                     {"data":"desc"},
-                    {"data":"category_id"},
+                    {"data":"category.name"},
                     {"data":"date"},
-                    {"data":"file"},
-                    {"data":"created_at"},
-                    {"data":"author_id"},
-                ]
+                    {"data":"author.name"},
+                ],
+                "columnDefs": [ {
+                    "targets": 1,
+                    "data": "_media.original_url",
+                    "render": function ( data, type, row, meta ) {
+                        return '<a href="'+data+'" target="_blank"><img class="file-type" src="http://127.0.0.1:8000/admin/voyager-extension-assets?path=icons%2Ffiles%2Fpdf.svg" style="height: 25px; width:auto"></a>';
+                    }
+                }]
             });
+        });
+
+        $('#search_term').keypress(function (e) {
+            var key = e.which;
+            if(key == 13)  // the enter key code
+            {
+                $("#search_btn").click();
+            }
         });
 
 
         $("#search_btn").click(function(){
+            table.ajax.reload();
+        });
 
-            var data = {};
+        function getFilterOptions(data) {
             data.category_id = $("#categories_").val();
             data.subject_id = $("#subjects_").val();
             data.author_id = $("#authors_").val();
             data.file_date_start = $("#file_date_start").val();
             data.file_date_end = $("#file_date_end").val();
-            data.search_in_title = $("#search_in_title").is(':checked');
+            data.search_in_name = $("#search_in_name").is(':checked');
             data.search_in_content = $("#search_in_content").is(':checked');
             data.search_term = $("#search_term").val().trim();
 
-            console.log(data);
-
-            $.ajax({
-                type: 'POST',
-                data: data,
-                url: "{{route('getFilteredDoc')}}",
-                success:function(data){
-                    //alert(data);
-                }
-            });
-            
-        });
+            return data;
+        }
 
     </script>
 
     <!-- Script -->
    <script type="text/javascript">
-   // CSRF Token
-   var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-   $(document).ready(function(){
 
-    setDate()
-    var default_option = [{"id": -1, "text": "All"}];
+    // CSRF Token
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    $(document).ready(function(){
 
-     $( "#authors_" ).select2({
-        ajax: { 
-          url: "{{route('getUsers')}}",
-          type: "post",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-               _token: CSRF_TOKEN,
-               search: params.term // search term
-            };
-          },
-          processResults: function (response) {
-            response = default_option.concat(response)
-            return {
-              results: response
-            };
-          },
-          cache: true
-        }
+        setDate()
+        var default_option = [{"id": -1, "text": "All"}];
 
-     });
+        $( "#authors_" ).select2({
+            ajax: {
+            url: "{{route('getUsers')}}",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                _token: CSRF_TOKEN,
+                search: params.term // search term
+                };
+            },
+            processResults: function (response) {
+                response = default_option.concat(response)
+                return {
+                results: response
+                };
+            },
+            cache: true
+            }
+
+    });
 
 
      $( "#subjects_" ).select2({
-        ajax: { 
+        ajax: {
           url: "{{route('getSubjects')}}",
           type: "post",
           dataType: 'json',
@@ -225,7 +239,7 @@
 
 
      $( "#categories_" ).select2({
-        ajax: { 
+        ajax: {
           url: "{{route('getCategories')}}",
           type: "post",
           dataType: 'json',
