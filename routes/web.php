@@ -23,15 +23,17 @@ Route::get('/login', function () {
     return redirect('/admin/login');
 })->name("login");
 
-Route::post('/admin/getUsers', [SearchFileController::class, 'getUsers'])->name('getUsers');
-Route::post('/admin/getSubjects', [SearchFileController::class, 'getSubjects'])->name('getSubjects');
-Route::post('/admin/getCategories', [SearchFileController::class, 'getCategories'])->name('getCategories');
-Route::post('/admin/getFilteredDoc', [SearchFileController::class, 'getFilteredDoc'])->name('getFilteredDoc');
-
 Route::get('/files/{path}', FilesController::class)->where('path', '^(.+)\/([^\/]+)$');
 
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::get("/search-file", [SearchFileController::class, "index"])->middleware("admin.user");
+    
     Voyager::routes();
+
+    Route::get("/search-file", [SearchFileController::class, "index"])->middleware("admin.user");
+
+    Route::post('/getUsers', [SearchFileController::class, 'getUsers'])->name('getUsers');
+    Route::post('/getSubjects', [SearchFileController::class, 'getSubjects'])->name('getSubjects');
+    Route::post('/getCategories', [SearchFileController::class, 'getCategories'])->name('getCategories');
+    Route::post('/getFilteredDoc', [SearchFileController::class, 'getFilteredDoc'])->name('getFilteredDoc');
 });

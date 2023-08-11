@@ -16,8 +16,9 @@ class Document extends Model implements HasMedia
     use InteractsWithMedia { addMedia as protected trAddMedia; }
 
 
-    public function __construct() {
+    public function __construct(array $attributes = []) {
         $this->author_id = auth()->user()->id;
+        parent::__construct($attributes);
     }
 
     function addMedia(string|UploadedFile $file): FileAdder
