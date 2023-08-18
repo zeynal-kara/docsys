@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Subject;
 use App\Models\Document;
+use Elasticsearch\ClientBuilder;
 
 class SearchFileController extends Controller
 {
@@ -17,9 +18,7 @@ class SearchFileController extends Controller
     function getFilteredDoc(Request $request) {
 
 
-        $query = $this->getFilteredDocQuery($request);
-
-        $items = $query->get();
+        $items = $this->getFilteredDocQuery($request);
 
         $response = array("data"=>$items);
 
@@ -36,9 +35,6 @@ class SearchFileController extends Controller
         $file_date_start = $request->file_date_start;
         $file_date_end = $request->file_date_end;
 
-        $search_term =trim($request->search_term);
-        $search_in_name = $request->search_in_name == "true";
-        $search_in_content = $request->search_in_content == "true";
 
         $query = Document::with(["subjects", "author", "category", "_media"]);
 
@@ -63,11 +59,51 @@ class SearchFileController extends Controller
                 $query->whereDate("date", "<=", $file_date_end);
         }
 
-        if ($search_term && $search_in_name) {
-            $query->where("name", "like", "%" . $search_term . "%");
-        }
+        return $this->queryDbOrElactic($request, $query);
+    }
 
-        return $query;
+    function queryDbOrElactic(Request $request, $query) {
+
+        $content_search_term =trim($request->content_search_term);
+        $name_search_term =trim($request->name_search_term);
+
+        if (!$content_search_term) {
+
+            return $name_search_term ? $query->where("name", "like", "%" . $name_search_term . "%")->get() :
+                                       $query->get();
+        }
+        
+        return $this->getDataFromElastic($query);
+    }
+
+    function getDataFromElastic($query) {
+
+        $hosts = [
+            //'http://user:pass@localhost:9200',       // HTTP Basic Authentication
+            'http://localhost:9200',
+        ];
+        
+        $client = ClientBuilder::create()
+                            ->setHosts($hosts)
+                            ->build();
+
+        //$response = $client->info();
+
+        $params = [
+            'index' => 'data_science_index',
+            'body'  => [
+                'query' => [
+                    'regexp' => [
+                        'file.filename' => '.*g.*'
+                    ]
+                ]
+            ]
+        ];
+        
+        $response = $client->search($params);
+        print_r($response); exit;
+
+        //dd($response);
     }
 
     public function getUsers(Request $request){

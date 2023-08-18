@@ -28,9 +28,14 @@
                 <label for="search_in_content">Search In Content <strong>[Advanced Search]</strong> </label>
             </div>
 
-            <div v-show="s_in_name || s_in_content" class="col-12">
-                <input id="search_term" type="text" class="form-control" placeholder="Search...">
+            <div v-show="s_in_name" class="col-12">
+                <input id="name_search_term" type="text" class="form-control" placeholder="Name...">
             </div>
+
+            <div v-show="s_in_content" class="col-12">
+                <input id="content_search_term" type="text" class="form-control" placeholder="Content...">
+            </div>
+
             <div class="row justify-content-center">
                 <div class="col-sm-3">
                     <label for="select" style="">Author</label>
@@ -152,7 +157,15 @@
             });
         });
 
-        $('#search_term').keypress(function (e) {
+        $('#content_search_term').keypress(function (e) {
+            var key = e.which;
+            if(key == 13)  // the enter key code
+            {
+                $("#search_btn").click();
+            }
+        });
+
+        $('#name_search_term').keypress(function (e) {
             var key = e.which;
             if(key == 13)  // the enter key code
             {
@@ -171,10 +184,12 @@
             data.author_id = $("#authors_").val();
             data.file_date_start = $("#file_date_start").val();
             data.file_date_end = $("#file_date_end").val();
-            data.search_in_name = $("#search_in_name").is(':checked');
-            data.search_in_content = $("#search_in_content").is(':checked');
-            data.search_term = $("#search_term").val().trim();
 
+            data.content_search_term = 
+                $("#search_in_content").is(':checked') ? $("#content_search_term").val().trim() : "";
+            data.name_search_term = 
+                $("#search_in_name").is(':checked') ? $("#name_search_term").val().trim() : "";
+            
             return data;
         }
 
