@@ -90,7 +90,7 @@ class SearchFileController extends Controller
         //$response = $client->info();
 
         $params = [
-            'index' => 'data_science_index',
+            'index' => 'docsys',
             'body'  => [
                 'query' => [
                     'regexp' => [

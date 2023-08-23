@@ -22,18 +22,18 @@
         <div class="row" style="padding: 10px">
             <div class="col-12 prevent-select">
                 <input v-model="s_in_name" id="search_in_name" type="checkbox"  style="margin-right:5px" checked>
-                <label for="search_in_name">Search In Name</label>
+                <label for="search_in_name">Search In File Name</label>
 
                 <input v-model="s_in_content" id="search_in_content" type="checkbox" style="margin-left: 20px; margin-right:5px">
                 <label for="search_in_content">Search In Content <strong>[Advanced Search]</strong> </label>
             </div>
 
             <div v-show="s_in_name" class="col-12">
-                <input id="name_search_term" type="text" class="form-control" placeholder="Name...">
+                <input id="name_search_term" type="text" class="form-control" placeholder="File Name .." autocomplete="off">
             </div>
 
             <div v-show="s_in_content" class="col-12">
-                <input id="content_search_term" type="text" class="form-control" placeholder="Content...">
+                <input id="content_search_term" type="text" class="form-control" placeholder="Content..." autocomplete="off">
             </div>
 
             <div class="row justify-content-center">
