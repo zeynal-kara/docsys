@@ -144,4 +144,11 @@ class FileAdder extends BFileAdder
         return $media;
     }
 
+    function setFileName(string $fileName): BFileAdder
+    {
+        return parent::setFileName( time() . "-". $fileName);
+    }
+
+
+
 }

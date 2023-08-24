@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use App\Customizations\CustomFilesystem;
+use Spatie\MediaLibrary\MediaCollections\Filesystem;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(Filesystem::class, CustomFilesystem::class);
     }
 
     /**
