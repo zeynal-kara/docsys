@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchFileController;
+use App\Http\Controllers\AdvSearchFileController;
 use App\Http\Controllers\FilesController;
 
 /*
@@ -30,10 +31,13 @@ Route::group(['prefix' => 'admin'], function () {
     
     Voyager::routes();
 
-    Route::get("/search-file", [SearchFileController::class, "index"])->middleware("admin.user");
+    Route::get("/classic-search-file", [SearchFileController::class, "index"])->middleware("admin.user");
+    Route::get("/adv-search-file", [AdvSearchFileController::class, "index"])->middleware("admin.user");
+    Route::post('/getAdvFilteredDoc', [AdvSearchFileController::class, 'getAdvFilteredDoc'])->name('getAdvFilteredDoc');
 
     Route::post('/getUsers', [SearchFileController::class, 'getUsers'])->name('getUsers');
     Route::post('/getSubjects', [SearchFileController::class, 'getSubjects'])->name('getSubjects');
     Route::post('/getCategories', [SearchFileController::class, 'getCategories'])->name('getCategories');
     Route::post('/getFilteredDoc', [SearchFileController::class, 'getFilteredDoc'])->name('getFilteredDoc');
+    
 });

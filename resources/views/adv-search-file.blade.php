@@ -22,11 +22,11 @@
         <div class="row" style="padding: 10px; margin-top: 18px">
            
             <div class="col-12">
-                <input id="name_search_term" type="text" class="form-control" placeholder="File Name" autocomplete="off">
+                <input id="name_search_term" type="text" class="form-control" placeholder="File Name .." autocomplete="off">
             </div>
 
             <div class="col-12">
-                <input id="desc_search_term" type="text" class="form-control" placeholder="Description .." autocomplete="off">
+                <input id="content_search_term" type="text" class="form-control" placeholder="Content .." autocomplete="off">
             </div>
 
             <div class="row justify-content-center">
@@ -140,7 +140,7 @@
             });
         });
 
-        $('#name_search_term, #desc_search_term').keypress(function (e) {
+        $('#content_search_term, #name_search_term').keypress(function (e) {
             var key = e.which;
             if(key == 13)  // the enter key code
             {
@@ -160,8 +160,8 @@
             data.file_date_start = $("#file_date_start").val();
             data.file_date_end = $("#file_date_end").val();
 
+            data.content_search_term = $("#content_search_term").val().trim();
             data.name_search_term = $("#name_search_term").val().trim();
-            data.desc_search_term = $("#desc_search_term").val().trim();
             
             return data;
         }
