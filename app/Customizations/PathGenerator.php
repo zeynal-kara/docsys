@@ -14,6 +14,6 @@ class PathGenerator extends DPathGenerator
 
     function getBasePath(Media $media): string
     {
-        return "/doc_root/";
+        return "/doc_root/" . $media->file_key . "/";
     }
 }

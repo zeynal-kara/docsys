@@ -14,10 +14,10 @@ use Spatie\MediaLibraryPro\Models\TemporaryUpload;
 
 class FileAdder extends BFileAdder
 {
-    public string $file_category_id = "";
+    public string $file_key = "";
 
     function addCustomProperty(Media $media) : Media {
-        $media->file_category_id = $this->file_category_id;
+        $media->file_key = $this->file_key;
         return $media;
     }
 
@@ -146,7 +146,8 @@ class FileAdder extends BFileAdder
 
     function setFileName(string $fileName): BFileAdder
     {
-        return parent::setFileName( time() . "-". $fileName);
+        // return parent::setFileName( time() . "-". $fileName);
+        return parent::setFileName("org_" . $this->subject->getKey(). ".pdf");
     }
 
 

@@ -13,6 +13,11 @@
             display: flex;
             align-items: flex-start;
         }
+
+        label{
+            font-weight: bold;
+            font-size: smaller !important;
+        }
     </style>
 @endsection
 
@@ -22,37 +27,39 @@
         <div class="row" style="padding: 10px; margin-top: 18px">
            
             <div class="col-12">
+                <label for="name_search_term">File Name:</label>
                 <input id="name_search_term" type="text" class="form-control" placeholder="File Name" autocomplete="off">
             </div>
 
             <div class="col-12">
+                <label for="desc_search_term">Description:</label> 
                 <input id="desc_search_term" type="text" class="form-control" placeholder="Description .." autocomplete="off">
             </div>
 
             <div class="row justify-content-center">
                 <div class="col-sm-3">
-                    <label for="select" style="">Author</label>
+                    <label for="authors_" style="">Author</label>
                     <select id="authors_" class="form-control" name="" id="">
                         <option value="-1">All</option>
                     </select>
                 </div>
 
                 <div class="col-sm-3">
-                    <label for="select" style="">Subject</label>
+                    <label for="subjects_" style="">Subject</label>
                     <select id="subjects_" class="form-control" name="" id="">
                         <option value="-1">All</option>
                     </select>
                 </div>
 
                 <div class="col-sm-2">
-                    <label for="select" style="">Category</label>
+                    <label for="categories_" style="">Category</label>
                     <select id="categories_" class="form-control" name="" id="">
                         <option value="-1">All</option>
                     </select>
                 </div>
 
                 <div class="col-sm-4">
-                    <label for="datepicker" style="">File Date</label>
+                    <label for="file_date_end" style="">File Date</label>
                     <div class="row" style="display: flex; margin:0">
                         <input id="file_date_start" type="date" class="form-control" value="">
                         <div class="input-group-addon" style="width:50px">to</div>
@@ -134,7 +141,7 @@
                     "targets": 1,
                     "data": "_media.original_url",
                     "render": function ( data, type, row, meta ) {
-                        return '<a href="'+data+'" target="_blank"><img class="file-type" src="http://127.0.0.1:8000/admin/voyager-extension-assets?path=icons%2Ffiles%2Fpdf.svg" style="height: 25px; width:auto"></a>';
+                        return '<a href="'+data+'" target="_blank"><img class="file-type" src="/admin/voyager-extension-assets?path=icons%2Ffiles%2Fpdf.svg" style="height: 25px; width:auto"></a>';
                     }
                 }]
             });

@@ -48,7 +48,7 @@ return [
     */
 
     'clone_record' => [
-        'enabled' => true,
+        'enabled' => false,
         'reset_types' => ['image', 'multiple_images','file'],
         'suffix_fields' => ['title','name','slug','key'],
     ],
